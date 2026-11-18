@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>D/s & S/M パーソナリティ診断</title>
+  <title>D/s & S/M パーソナリティ診断 ＆ 相性分析</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -45,17 +45,23 @@
     <!-- スタート画面 -->
     <div id="start-screen" class="glass-card rounded-3xl p-8 text-center shadow-2xl">
       <div class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-pink-400 uppercase bg-pink-500/10 rounded-full border border-pink-500/20">
-        10 Questions Test
+        10 Questions & Pairing Test
       </div>
       <h1 class="text-3xl font-extrabold mb-3 tracking-tight">
         <span class="gradient-text">ドミ・サブ・S・M</span><br>気質＆相性診断
       </h1>
-      <p class="text-zinc-400 text-sm mb-8 leading-relaxed">
-        10問の質問に直感で答えるだけで、あなたの「ドミナント（支配）」「サブミッシブ（服従）」「サディスト（加虐）」「マゾヒスト（被虐）」の割合と、相性の良いタイプを分析します。
+      <p class="text-zinc-400 text-sm mb-6 leading-relaxed">
+        10問の質問であなたの気質割合を診断！さらに、他の人の診断IDを入力すれば、2人の相性や具体的な付き合い方まで丸わかり。
       </p>
-      <button onclick="startQuiz()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-lg shadow-lg shadow-pink-600/25 transition-all active:scale-95">
-        診断をはじめる
-      </button>
+
+      <div class="space-y-3">
+        <button onclick="startQuiz()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-lg shadow-lg shadow-pink-600/25 transition-all active:scale-95">
+          診断をはじめる
+        </button>
+        <button onclick="showPairInput()" class="w-full py-3 px-6 rounded-2xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium text-sm transition-all border border-zinc-700">
+          🔗 相手のIDで相性を調べる
+        </button>
+      </div>
     </div>
 
     <!-- 質問画面 -->
@@ -75,240 +81,4 @@
       <div class="space-y-3">
         <button onclick="answerQuestion(2)" class="w-full py-3.5 px-4 rounded-xl bg-zinc-800/80 hover:bg-pink-600/20 border border-zinc-700 hover:border-pink-500/50 text-left font-medium transition-all flex items-center justify-between group">
           <span>非常に当てはまる</span>
-          <span class="w-4 h-4 rounded-full border border-zinc-500 group-hover:border-pink-400"></span>
-        </button>
-        <button onclick="answerQuestion(1)" class="w-full py-3.5 px-4 rounded-xl bg-zinc-800/80 hover:bg-pink-600/20 border border-zinc-700 hover:border-pink-500/50 text-left font-medium transition-all flex items-center justify-between group">
-          <span>やや当てはまる</span>
-          <span class="w-4 h-4 rounded-full border border-zinc-500 group-hover:border-pink-400"></span>
-        </button>
-        <button onclick="answerQuestion(0)" class="w-full py-3.5 px-4 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700 text-left font-medium text-zinc-300 transition-all flex items-center justify-between group">
-          <span>どちらともいえない</span>
-          <span class="w-4 h-4 rounded-full border border-zinc-500"></span>
-        </button>
-        <button onclick="answerQuestion(-1)" class="w-full py-3.5 px-4 rounded-xl bg-zinc-800/80 hover:bg-purple-600/20 border border-zinc-700 hover:border-purple-500/50 text-left font-medium transition-all flex items-center justify-between group">
-          <span>あまり当てはまらない</span>
-          <span class="w-4 h-4 rounded-full border border-zinc-500 group-hover:border-purple-400"></span>
-        </button>
-        <button onclick="answerQuestion(-2)" class="w-full py-3.5 px-4 rounded-xl bg-zinc-800/80 hover:bg-purple-600/20 border border-zinc-700 hover:border-purple-500/50 text-left font-medium transition-all flex items-center justify-between group">
-          <span>全く当てはまらない</span>
-          <span class="w-4 h-4 rounded-full border border-zinc-500 group-hover:border-purple-400"></span>
-        </button>
-      </div>
-    </div>
-
-    <!-- 結果画面 -->
-    <div id="result-screen" class="hidden glass-card rounded-3xl p-6 sm:p-8 shadow-2xl">
-      <div class="text-center mb-6">
-        <span class="text-xs font-bold tracking-widest text-zinc-400 uppercase">DIAGNOSIS RESULT</span>
-        <h2 id="result-title" class="text-2xl sm:text-3xl font-extrabold mt-1 gradient-text">
-          タイプ名
-        </h2>
-        <p id="result-subtitle" class="text-xs text-zinc-400 mt-1">サブタイトル</p>
-      </div>
-
-      <!-- 4つの割合バー（必ず0〜100%に収まる正規化計算） -->
-      <div class="space-y-4 mb-6 bg-zinc-900/60 p-5 rounded-2xl border border-zinc-800">
-        <div>
-          <div class="flex justify-between text-sm font-bold mb-1">
-            <span class="text-pink-400">ドミナント (Dom / 支配)</span>
-            <span id="score-dom">0%</span>
-          </div>
-          <div class="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden">
-            <div id="bar-dom" class="bg-pink-500 h-full rounded-full transition-all duration-700" style="width: 0%"></div>
-          </div>
-        </div>
-
-        <div>
-          <div class="flex justify-between text-sm font-bold mb-1">
-            <span class="text-purple-400">サブミッシブ (Sub / 服従)</span>
-            <span id="score-sub">0%</span>
-          </div>
-          <div class="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden">
-            <div id="bar-sub" class="bg-purple-500 h-full rounded-full transition-all duration-700" style="width: 0%"></div>
-          </div>
-        </div>
-
-        <div>
-          <div class="flex justify-between text-sm font-bold mb-1">
-            <span class="text-rose-400">サディスト (S / 加虐)</span>
-            <span id="score-s">0%</span>
-          </div>
-          <div class="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden">
-            <div id="bar-s" class="bg-rose-500 h-full rounded-full transition-all duration-700" style="width: 0%"></div>
-          </div>
-        </div>
-
-        <div>
-          <div class="flex justify-between text-sm font-bold mb-1">
-            <span class="text-indigo-400">マゾヒスト (M / 被虐)</span>
-            <span id="score-m">0%</span>
-          </div>
-          <div class="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden">
-            <div id="bar-m" class="bg-indigo-500 h-full rounded-full transition-all duration-700" style="width: 0%"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- タイプ解説＆相性 -->
-      <div class="space-y-4 mb-6">
-        <div class="bg-zinc-900/40 p-4 rounded-2xl border border-zinc-800/80">
-          <h3 class="text-xs font-bold text-zinc-400 uppercase mb-1">あなたの気質の特徴</h3>
-          <p id="result-desc" class="text-sm text-zinc-200 leading-relaxed"></p>
-        </div>
-        <div class="bg-gradient-to-r from-pink-500/10 to-purple-500/10 p-4 rounded-2xl border border-pink-500/20">
-          <h3 class="text-xs font-bold text-pink-400 uppercase mb-1">最も相性が良いパートナー</h3>
-          <p id="result-match" class="text-sm font-bold text-white"></p>
-        </div>
-      </div>
-
-      <!-- アクションボタン -->
-      <div class="space-y-3">
-        <button onclick="shareOnX()" class="w-full py-3.5 px-6 rounded-2xl bg-white text-black hover:bg-zinc-200 font-bold text-base shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95">
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          結果をX（Twitter）でポストする
-        </button>
-        <button onclick="resetQuiz()" class="w-full py-3 px-6 rounded-2xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium text-sm transition-all">
-          もう一度診断する
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // 質問リスト（各質問は dom/sub 軸 または s/m 軸に影響）
-    // weight: +1 は正方向（Dom または S）、-1 は負方向（Sub または M）
-    const questions = [
-      { text: "デートのプランや主導権は、自分が握ってリードしたい方だ。", axis: "ds", weight: 1 },
-      { text: "信頼できる相手には、自分のすべてを委ねて指示されたいと強く思う。", axis: "ds", weight: -1 },
-      { text: "相手が困ったり、恥ずかしがったりする表情を見るとゾクゾクする。", axis: "sm", weight: 1 },
-      { text: "少し強引に扱われたり、痛みや拘束感を伴うシチュエーションに惹かれる。", axis: "sm", weight: -1 },
-      { text: "パートナーの生活習慣やルールを自分が管理・コントロールしたい。", axis: "ds", weight: 1 },
-      { text: "「いい子だね」と褒められたり、認められることで最大の安心感を得る。", axis: "ds", weight: -1 },
-      { text: "相手の限界を試すような攻め方や、主導権を握って翻弄するのが好きだ。", axis: "sm", weight: 1 },
-      { text: "抵抗できない状況に置かれると、かえって気持ちが昂ぶる。", axis: "sm", weight: -1 },
-      { text: "相手を守るためなら、自分が責任を負って決断を下すことに迷いがない。", axis: "ds", weight: 1 },
-      { text: "理屈で考えるよりも、相手の感情や感覚に深く身を任せる方が心地よい。", axis: "sm", weight: -1 }
-    ];
-
-    let currentQuestion = 0;
-    let rawDs = 0; // 範囲: -10 〜 +10（5問 × ±2点）
-    let rawSm = 0; // 範囲: -10 〜 +10（5問 × ±2点）
-    let shareTextCache = "";
-
-    function startQuiz() {
-      currentQuestion = 0;
-      rawDs = 0;
-      rawSm = 0;
-      document.getElementById('start-screen').classList.add('hidden');
-      document.getElementById('result-screen').classList.add('hidden');
-      document.getElementById('quiz-screen').classList.remove('hidden');
-      renderQuestion();
-    }
-
-    function renderQuestion() {
-      const q = questions[currentQuestion];
-      document.getElementById('question-number').textContent = `QUESTION ${currentQuestion + 1} / ${questions.length}`;
-      const progress = ((currentQuestion + 1) / questions.length) * 100;
-      document.getElementById('progress-text').textContent = `${progress}%`;
-      document.getElementById('progress-bar').style.width = `${progress}%`;
-      document.getElementById('question-text').textContent = q.text;
-    }
-
-    function answerQuestion(score) {
-      const q = questions[currentQuestion];
-      if (q.axis === 'ds') {
-        rawDs += score * q.weight;
-      } else {
-        rawSm += score * q.weight;
-      }
-
-      currentQuestion++;
-      if (currentQuestion < questions.length) {
-        renderQuestion();
-      } else {
-        showResult();
-      }
-    }
-
-    // 確実に 0〜100 の整数に収める関数
-    function clampPercent(val) {
-      return Math.max(0, Math.min(100, Math.round(val)));
-    }
-
-    function showResult() {
-      document.getElementById('quiz-screen').classList.add('hidden');
-      document.getElementById('result-screen').classList.remove('hidden');
-
-      // rawDs は -10 〜 +10 の範囲
-      // Dom% = ((rawDs + 10) / 20) * 100
-      const domPct = clampPercent(((rawDs + 10) / 20) * 100);
-      const subPct = 100 - domPct;
-
-      // rawSm は -10 〜 +10 の範囲
-      // S% = ((rawSm + 10) / 20) * 100
-      const sPct = clampPercent(((rawSm + 10) / 20) * 100);
-      const mPct = 100 - sPct;
-
-      document.getElementById('score-dom').textContent = `${domPct}%`;
-      document.getElementById('score-sub').textContent = `${subPct}%`;
-      document.getElementById('score-s').textContent = `${sPct}%`;
-      document.getElementById('score-m').textContent = `${mPct}%`;
-
-      setTimeout(() => {
-        document.getElementById('bar-dom').style.width = `${domPct}%`;
-        document.getElementById('bar-sub').style.width = `${subPct}%`;
-        document.getElementById('bar-s').style.width = `${sPct}%`;
-        document.getElementById('bar-m').style.width = `${mPct}%`;
-      }, 100);
-
-      // タイプ判定
-      const isDom = domPct >= 50;
-      const isS = sPct >= 50;
-      let typeTitle = "";
-      let typeSub = "";
-      let desc = "";
-      let match = "";
-
-      if (isDom && isS) {
-        typeTitle = "絶対的支配者（Dom × S）";
-        typeSub = "Dominant / Sadist";
-        desc = "主導権を完全に握り、相手を思い通りにコントロールしながら刺激を与えることに強い喜びを感じるカリスマ気質です。責任感も強く、相手を導く力に長けています。";
-        match = "献身的な被虐者（Sub × M）タイプ";
-      } else if (isDom && !isS) {
-        typeTitle = "包容力ある導き手（Dom × M）";
-        typeSub = "Dominant / Masochist";
-        desc = "精神的な主導権や管理は自分が握りたいものの、感覚的には相手からの強い刺激や要求を受け止めたいギャップを持つ気質です。面倒見が良く、深い絆を求めます。";
-        match = "小悪魔的な従者（Sub × S）タイプ";
-      } else if (!isDom && isS) {
-        typeTitle = "小悪魔的な従者（Sub × S）";
-        typeSub = "Submissive / Sadist";
-        desc = "普段は相手に委ねてルールに従う安心感を求めつつも、いざという場面では相手を翻弄したり責めたりする一面を持つミステリアスな気質です。";
-        match = "包容力ある導き手（Dom × M）タイプ";
-      } else {
-        typeTitle = "献身的な被虐者（Sub × M）";
-        typeSub = "Submissive / Masochist";
-        desc = "信頼した相手に心も体もすべて委ね、強い刺激や支配を受けることで深い幸福感と解放感を味わう純粋な気質です。感受性が豊かで一途な愛情を持ちます。";
-        match = "絶対的支配者（Dom × S）タイプ";
-      }
-
-      document.getElementById('result-title').textContent = typeTitle;
-      document.getElementById('result-subtitle').textContent = typeSub;
-      document.getElementById('result-desc').textContent = desc;
-      document.getElementById('result-match').textContent = match;
-
-      // Xシェア用テキスト生成
-      shareTextCache = `【ドミ・サブ・S・M気質診断】\n私の結果は「${typeTitle}」でした！\n\n・Dom(支配)：${domPct}%\n・Sub(服従)：${subPct}%\n・S(加虐)：${sPct}%\n・M(被虐)：${mPct}%\n\n相性が良いのは【${match}】\n#気質診断 #心理テスト`;
-    }
-
-    function shareOnX() {
-      const pageUrl = window.location.href;
-      const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTextCache)}&url=${encodeURIComponent(pageUrl)}`;
-      window.open(intentUrl, '_blank');
-    }
-
-    function resetQuiz() {
-      startQuiz();
-    }
-  </script>
-</body>
-</html>
+          <span class="w-4 h-4 rounded-full border border-zinc-500 group-hover:
