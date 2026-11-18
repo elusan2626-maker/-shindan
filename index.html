@@ -15,9 +15,15 @@
   <div class="w-full max-w-md">
     <!-- スタート画面 -->
     <div id="start-screen" class="card rounded-3xl p-8 text-center shadow-2xl">
+      <div id="invite-banner" class="hidden mb-5 p-3.5 rounded-2xl bg-pink-500/15 border border-pink-500/30 text-left">
+        <div class="text-xs font-bold text-pink-400 mb-0.5">💌 相性診断の招待が届いています</div>
+        <div id="invite-partner-type" class="text-sm font-bold text-white"></div>
+        <div class="text-xs text-zinc-400 mt-1">診断を受けると、この人との相性％が分かります！</div>
+      </div>
+
       <div class="inline-block px-3 py-1 mb-4 text-xs font-bold text-pink-400 bg-pink-500/10 rounded-full border border-pink-500/20">10 QUESTIONS TEST</div>
       <h1 class="text-3xl font-extrabold mb-3"><span class="grad-text">ドミ・サブ・S・M</span><br>気質＆相性診断</h1>
-      <p class="text-zinc-400 text-sm mb-8">10問の質問に直感で答えるだけで、あなたの「Dom」「Sub」「S」「M」の割合と相性の良いタイプを分析します。</p>
+      <p class="text-zinc-400 text-sm mb-8">10問の質問に直感で答えるだけで、あなたの「Dom」「Sub」「S」「M」の割合と相性を分析します。</p>
       <button type="button" id="btn-start" class="w-full py-4 rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-lg shadow-lg active:scale-95">診断をはじめる</button>
     </div>
 
@@ -31,7 +37,7 @@
         <div id="q-bar" class="bg-gradient-to-r from-pink-500 to-purple-500 h-full transition-all" style="width:10%"></div>
       </div>
       <h2 id="q-text" class="text-lg font-bold mb-6 min-h-[3.5rem]"></h2>
-      <div class="space-y-2.5" id="ans-buttons">
+      <div class="space-y-2.5">
         <button type="button" data-val="2" class="ans-btn w-full py-3.5 px-4 rounded-xl bg-zinc-800 hover:bg-pink-600/20 border border-zinc-700 text-left font-medium">非常に当てはまる</button>
         <button type="button" data-val="1" class="ans-btn w-full py-3.5 px-4 rounded-xl bg-zinc-800 hover:bg-pink-600/20 border border-zinc-700 text-left font-medium">やや当てはまる</button>
         <button type="button" data-val="0" class="ans-btn w-full py-3.5 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-left font-medium text-zinc-300">どちらともいえない</button>
@@ -42,12 +48,21 @@
 
     <!-- 結果画面 -->
     <div id="result-screen" class="hidden card rounded-3xl p-6 shadow-2xl">
+      <!-- 2人の相性結果ボックス（招待URLから来た場合のみ表示） -->
+      <div id="compat-box" class="hidden mb-5 p-4 rounded-2xl bg-gradient-to-br from-pink-600/20 to-purple-600/20 border border-pink-500/40 text-center">
+        <div class="text-xs font-bold text-pink-300 tracking-wider">2人の相性診断結果</div>
+        <div class="text-4xl font-black text-white my-1"><span id="compat-score">0</span><span class="text-xl">%</span></div>
+        <div id="compat-pair" class="text-xs text-zinc-300 mb-2"></div>
+        <p id="compat-desc" class="text-xs text-zinc-200 bg-black/30 p-2.5 rounded-xl leading-relaxed text-left"></p>
+      </div>
+
       <div class="text-center mb-5">
-        <span class="text-xs font-bold text-zinc-400">DIAGNOSIS RESULT</span>
+        <span class="text-xs font-bold text-zinc-400">YOUR RESULT</span>
         <h2 id="r-title" class="text-2xl font-extrabold mt-1 grad-text"></h2>
         <p id="r-sub" class="text-xs text-zinc-400 mt-1"></p>
       </div>
-      <div class="space-y-3.5 mb-5 bg-zinc-900/70 p-4 rounded-2xl border border-zinc-800 text-sm">
+
+      <div class="space-y-3 mb-5 bg-zinc-900/70 p-4 rounded-2xl border border-zinc-800 text-sm">
         <div>
           <div class="flex justify-between font-bold mb-1"><span class="text-pink-400">ドミナント (Dom)</span><span id="s-dom">0%</span></div>
           <div class="w-full bg-zinc-800 h-2 rounded-full"><div id="b-dom" class="bg-pink-500 h-full rounded-full" style="width:0%"></div></div>
@@ -65,18 +80,21 @@
           <div class="w-full bg-zinc-800 h-2 rounded-full"><div id="b-m" class="bg-indigo-500 h-full rounded-full" style="width:0%"></div></div>
         </div>
       </div>
+
       <div class="space-y-3 mb-5 text-sm">
         <div class="bg-zinc-900/40 p-3.5 rounded-xl border border-zinc-800">
           <div class="text-xs font-bold text-zinc-400 mb-1">気質の特徴</div>
           <p id="r-desc" class="text-zinc-200 leading-relaxed"></p>
         </div>
         <div class="bg-pink-500/10 p-3.5 rounded-xl border border-pink-500/20">
-          <div class="text-xs font-bold text-pink-400 mb-1">相性が良いパートナー</div>
+          <div class="text-xs font-bold text-pink-400 mb-1">最も相性が良いタイプ</div>
           <p id="r-match" class="font-bold text-white"></p>
         </div>
       </div>
-      <button type="button" id="btn-share" class="w-full py-3.5 rounded-2xl bg-white text-black font-bold mb-2.5 active:scale-95">結果をX（Twitter）でポストする</button>
-      <button type="button" id="btn-retry" class="w-full py-3 rounded-2xl bg-zinc-800 text-zinc-300 text-sm font-medium">もう一度診断する</button>
+
+      <button type="button" id="btn-share" class="w-full py-3.5 rounded-2xl bg-white text-black font-bold mb-2.5 active:scale-95">結果＆相性リンクをXにポスト</button>
+      <button type="button" id="btn-copy" class="w-full py-3 rounded-2xl bg-pink-600/20 border border-pink-500/40 text-pink-300 text-sm font-bold mb-2.5 active:scale-95">相手と相性を見る用URLをコピー</button>
+      <button type="button" id="btn-retry" class="w-full py-3 rounded-2xl bg-zinc-800 text-zinc-300 text-sm font-medium">もう一度診断する（リセット）</button>
     </div>
   </div>
 
@@ -93,7 +111,27 @@
       { t: "相手を守るためなら、自分が責任を負って決断を下すことに迷いがない。", a: "ds", w: 1 },
       { t: "理屈で考えるよりも、相手の感情や感覚に身を任せる方が心地よい。", a: "sm", w: -1 }
     ];
-    let idx = 0, ds = 0, sm = 0, shareTxt = "";
+
+    let idx = 0, ds = 0, sm = 0, myShareUrl = "", shareTxt = "";
+
+    // URLパラメータから招待主のデータを取得
+    const params = new URLSearchParams(window.location.search);
+    const invDom = params.has('d') ? Math.max(0, Math.min(100, Number(params.get('d')))) : null;
+    const invS = params.has('s') ? Math.max(0, Math.min(100, Number(params.get('s')))) : null;
+
+    function getTypeInfo(domP, sP) {
+      if (domP >= 50 && sP >= 50) return { title: "絶対的支配者（Dom × S）", sub: "Dominant / Sadist", desc: "主導権を握り、相手をコントロールしながら刺激を与えることに喜びを感じるカリスマ気質。責任感も強く導く力に長けています。", match: "献身的な被虐者（Sub × M）タイプ" };
+      if (domP >= 50 && sP < 50) return { title: "包容力ある導き手（Dom × M）", sub: "Dominant / Masochist", desc: "精神的な主導権や管理は握りたいものの、感覚的には相手からの強い刺激を受け止めたいギャップを持つ気質。面倒見が良く深い絆を求めます。", match: "小悪魔的な従者（Sub × S）タイプ" };
+      if (domP < 50 && sP >= 50) return { title: "小悪魔的な従者（Sub × S）", sub: "Submissive / Sadist", desc: "普段は相手に委ねてルールに従う安心感を求めつつも、いざという場面では相手を翻弄したり責めたりする一面を持つミステリアスな気質です。", match: "包容力ある導き手（Dom × M）タイプ" };
+      return { title: "献身的な被虐者（Sub × M）", sub: "Submissive / Masochist", desc: "信頼した相手に心も体もすべて委ね、強い刺激や支配を受けることで深い幸福感と解放感を味わう純粋な気質。一途な愛情を持ちます。", match: "絶対的支配者（Dom × S）タイプ" };
+    }
+
+    // 招待リンクから開かれた場合の初期表示
+    if (invDom !== null && invS !== null && !isNaN(invDom) && !isNaN(invS)) {
+      const invInfo = getTypeInfo(invDom, invS);
+      document.getElementById('invite-banner').classList.remove('hidden');
+      document.getElementById('invite-partner-type').textContent = `相手：${invInfo.title}`;
+    }
 
     function showScreen(id) {
       ['start-screen', 'quiz-screen', 'result-screen'].forEach(s => {
@@ -138,36 +176,53 @@
       document.getElementById('b-s').style.width = sP + '%';
       document.getElementById('b-m').style.width = mP + '%';
 
-      let title, sub, desc, match;
-      if (domP >= 50 && sP >= 50) {
-        title = "絶対的支配者（Dom × S）"; sub = "Dominant / Sadist";
-        desc = "主導権を握り、相手をコントロールしながら刺激を与えることに喜びを感じるカリスマ気質。責任感も強く導く力に長けています。";
-        match = "献身的な被虐者（Sub × M）タイプ";
-      } else if (domP >= 50 && sP < 50) {
-        title = "包容力ある導き手（Dom × M）"; sub = "Dominant / Masochist";
-        desc = "精神的な主導権や管理は握りたいものの、感覚的には相手からの強い刺激を受け止めたいギャップを持つ気質。面倒見が良く深い絆を求めます。";
-        match = "小悪魔的な従者（Sub × S）タイプ";
-      } else if (domP < 50 && sP >= 50) {
-        title = "小悪魔的な従者（Sub × S）"; sub = "Submissive / Sadist";
-        desc = "普段は相手に委ねてルールに従う安心感を求めつつも、いざという場面では相手を翻弄したり責めたりする一面を持つミステリアスな気質です。";
-        match = "包容力ある導き手（Dom × M）タイプ";
-      } else {
-        title = "献身的な被虐者（Sub × M）"; sub = "Submissive / Masochist";
-        desc = "信頼した相手に心も体もすべて委ね、強い刺激や支配を受けることで深い幸福感と解放感を味わう純粋な気質。一途な愛情を持ちます。";
-        match = "絶対的支配者（Dom × S）タイプ";
-      }
+      const info = getTypeInfo(domP, sP);
+      document.getElementById('r-title').textContent = info.title;
+      document.getElementById('r-sub').textContent = info.sub;
+      document.getElementById('r-desc').textContent = info.desc;
+      document.getElementById('r-match').textContent = info.match;
 
-      document.getElementById('r-title').textContent = title;
-      document.getElementById('r-sub').textContent = sub;
-      document.getElementById('r-desc').textContent = desc;
-      document.getElementById('r-match').textContent = match;
-      shareTxt = `【ドミ・サブ・S・M気質診断】\n結果は「${title}」でした！\nDom:${domP}% / Sub:${subP}% / S:${sP}% / M:${mP}%\n相性◎：${match}\n#気質診断 #心理テスト`;
+      // 自分の結果データ入りの相性診断用URLを生成
+      const baseUrl = window.location.origin + window.location.pathname;
+      myShareUrl = `${baseUrl}?d=${domP}&s=${sP}`;
+
+      // 招待主がいる場合、2人の相性を計算（補完関係が高いほど高スコア）
+      if (invDom !== null && invS !== null && !isNaN(invDom) && !isNaN(invS)) {
+        const dsComplement = 100 - Math.abs((domP + invDom) - 100);
+        const smComplement = 100 - Math.abs((sP + invS) - 100);
+        const compatPct = Math.max(20, Math.min(100, Math.round((dsComplement + smComplement) / 2)));
+        const invInfo = getTypeInfo(invDom, invS);
+
+        document.getElementById('compat-box').classList.remove('hidden');
+        document.getElementById('compat-score').textContent = compatPct;
+        document.getElementById('compat-pair').textContent = `あなた(${info.title.split('（')[0]}) × 相手(${invInfo.title.split('（')[0]})`;
+
+        let cDesc = "";
+        if (compatPct >= 85) cDesc = "運命レベルの完璧な補完関係！お互いの求める役割と刺激がピタリと噛み合い、深く満たされる最高の相性です。";
+        else if (compatPct >= 65) cDesc = "とても良いバランスです！主導権や刺激の与え方に自然なメリハリが生まれ、心地よい関係を築けます。";
+        else if (compatPct >= 45) cDesc = "似た者同士、または少し刺激が強すぎる組み合わせ。ルールや役割を話し合うことで一気に距離が縮まります。";
+        else cDesc = "お互いの気質がぶつかりやすいスリリングな相性。普段とは逆の役割を演じてみると新しい発見がありそうです。";
+        document.getElementById('compat-desc').textContent = cDesc;
+
+        shareTxt = `【2人の気質相性診断】\n私(${info.title.split('（')[0]}) × 相手(${invInfo.title.split('（')[0]})\n相性度は【${compatPct}%】でした！\n#気質診断 #相性診断`;
+      } else {
+        shareTxt = `【ドミ・サブ・S・M気質診断】\n結果は「${info.title}」でした！\nDom:${domP}% / Sub:${subP}% / S:${sP}% / M:${mP}%\n👇このリンクから診断すると私との相性％が分かります！\n#気質診断 #心理テスト`;
+      }
     }
 
     document.getElementById('btn-start').addEventListener('click', start);
-    document.getElementById('btn-retry').addEventListener('click', start);
+    document.getElementById('btn-retry').addEventListener('click', () => {
+      window.location.href = window.location.origin + window.location.pathname;
+    });
     document.getElementById('btn-share').addEventListener('click', () => {
-      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTxt)}&url=${encodeURIComponent(location.href)}`, '_blank');
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTxt)}&url=${encodeURIComponent(myShareUrl)}`, '_blank');
+    });
+    document.getElementById('btn-copy').addEventListener('click', () => {
+      navigator.clipboard.writeText(myShareUrl).then(() => {
+        const btn = document.getElementById('btn-copy');
+        btn.textContent = "コピーしました！LINEやDMで送ってください";
+        setTimeout(() => { btn.textContent = "相手と相性を見る用URLをコピー"; }, 2500);
+      });
     });
     document.querySelectorAll('.ans-btn').forEach(b => {
       b.addEventListener('click', () => answer(Number(b.dataset.val)));
