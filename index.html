@@ -3,144 +3,175 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>D/s & S/M パーソナリティ診断</title>
+  <title>D/s & S/M 気質＆相性診断</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            darkBg: '#09090b',
-            cardBg: '#121216',
-            accentPink: '#ec4899',
-            accentPurple: '#8b5cf6',
-            accentRed: '#f43f5e'
-          }
-        }
-      }
-    }
-  </script>
   <style>
-    body {
-      background-color: #09090b;
-      color: #f4f4f5;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    }
-    .glass-card {
-      background: rgba(18, 18, 22, 0.85);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .gradient-text {
-      background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+    body { background: #09090b; color: #f4f4f5; font-family: sans-serif; }
+    .card { background: #121216; border: 1px solid rgba(255,255,255,0.1); }
+    .grad-text { background: linear-gradient(135deg, #ec4899, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4 selection:bg-pink-500 selection:text-white">
-
-  <div class="w-full max-w-md mx-auto">
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-md">
     <!-- スタート画面 -->
-    <div id="start-screen" class="glass-card rounded-3xl p-8 text-center shadow-2xl">
-      <div class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-pink-400 uppercase bg-pink-500/10 rounded-full border border-pink-500/20">
-        10 Questions Test
-      </div>
-      <h1 class="text-3xl font-extrabold mb-3 tracking-tight">
-        <span class="gradient-text">ドミ・サブ・S・M</span><br>気質＆相性診断
-      </h1>
-      <p class="text-zinc-400 text-sm mb-8 leading-relaxed">
-        10問の質問に直感で答えるだけで、あなたの「ドミナント（支配）」「サブミッシブ（服従）」「サディスト（加虐）」「マゾヒスト（被虐）」の割合と、相性の良いタイプを分析します。
-      </p>
-      <button onclick="startQuiz()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-lg shadow-lg shadow-pink-600/25 transition-all active:scale-95">
-        診断をはじめる
-      </button>
+    <div id="start-screen" class="card rounded-3xl p-8 text-center shadow-2xl">
+      <div class="inline-block px-3 py-1 mb-4 text-xs font-bold text-pink-400 bg-pink-500/10 rounded-full border border-pink-500/20">10 QUESTIONS TEST</div>
+      <h1 class="text-3xl font-extrabold mb-3"><span class="grad-text">ドミ・サブ・S・M</span><br>気質＆相性診断</h1>
+      <p class="text-zinc-400 text-sm mb-8">10問の質問に直感で答えるだけで、あなたの「Dom」「Sub」「S」「M」の割合と相性の良いタイプを分析します。</p>
+      <button type="button" id="btn-start" class="w-full py-4 rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-lg shadow-lg active:scale-95">診断をはじめる</button>
     </div>
 
     <!-- 質問画面 -->
-    <div id="quiz-screen" class="hidden glass-card rounded-3xl p-6 sm:p-8 shadow-2xl">
-      <div class="flex justify-between items-center mb-4">
-        <span id="question-number" class="text-xs font-bold text-pink-400 tracking-wider">QUESTION 1 / 10</span>
-        <span id="progress-text" class="text-xs text-zinc-500">10%</span>
+    <div id="quiz-screen" class="hidden card rounded-3xl p-6 shadow-2xl">
+      <div class="flex justify-between text-xs mb-3">
+        <span id="q-num" class="font-bold text-pink-400">QUESTION 1 / 10</span>
+        <span id="q-pct" class="text-zinc-500">10%</span>
       </div>
-      <div class="w-full bg-zinc-800 h-1.5 rounded-full mb-8 overflow-hidden">
-        <div id="progress-bar" class="bg-gradient-to-r from-pink-500 to-purple-500 h-full transition-all duration-300" style="width: 10%"></div>
+      <div class="w-full bg-zinc-800 h-1.5 rounded-full mb-6 overflow-hidden">
+        <div id="q-bar" class="bg-gradient-to-r from-pink-500 to-purple-500 h-full transition-all" style="width:10%"></div>
       </div>
-
-      <h2 id="question-text" class="text-xl font-bold mb-8 leading-snug min-h-[3.5rem]">
-        質問文がここに入ります
-      </h2>
-
-      <div class="space-y-3">
-        <button onclick="answerQuestion(2)" class="w-full py-3.5 px-4 rounded-xl bg-zinc-800/80 hover:bg-pink-600/20 border border-zinc-700 hover:border-pink-500/50 text-left font-medium transition-all flex items-center justify-between group">
-          <span>非常に当てはまる</span>
-          <span class="w-4 h-4 rounded-full border border-zinc-500 group-hover:border-pink-400"></span>
-        </button>
-        <button onclick="answerQuestion(1)" class="w-full py-3.5 px-4 rounded-xl bg-zinc-800/80 hover:bg-pink-600/20 border border-zinc-700 hover:border-pink-500/50 text-left font-medium transition-all flex items-center justify-between group">
-          <span>やや当てはまる</span>
-          <span class="w-4 h-4 rounded-full border border-zinc-500 group-hover:border-pink-400"></span>
-        </button>
-        <button onclick="answerQuestion(0)" class="w-full py-3.5 px-4 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700 text-left font-medium text-zinc-300 transition-all flex items-center justify-between group">
-          <span>どちらともいえない</span>
-          <span class="w-4 h-4 rounded-full border border-zinc-500"></span>
-        </button>
-        <button onclick="answerQuestion(-1)" class="w-full py-3.5 px-4 rounded-xl bg-zinc-800/80 hover:bg-purple-600/20 border border-zinc-700 hover:border-purple-500/50 text-left font-medium transition-all flex items-center justify-between group">
-          <span>あまり当てはまらない</span>
-          <span class="w-4 h-4 rounded-full border border-zinc-500 group-hover:border-purple-400"></span>
-        </button>
-        <button onclick="answerQuestion(-2)" class="w-full py-3.5 px-4 rounded-xl bg-zinc-800/80 hover:bg-purple-600/20 border border-zinc-700 hover:border-purple-500/50 text-left font-medium transition-all flex items-center justify-between group">
-          <span>全く当てはまらない</span>
-          <span class="w-4 h-4 rounded-full border border-zinc-500 group-hover:border-purple-400"></span>
-        </button>
+      <h2 id="q-text" class="text-lg font-bold mb-6 min-h-[3.5rem]"></h2>
+      <div class="space-y-2.5" id="ans-buttons">
+        <button type="button" data-val="2" class="ans-btn w-full py-3.5 px-4 rounded-xl bg-zinc-800 hover:bg-pink-600/20 border border-zinc-700 text-left font-medium">非常に当てはまる</button>
+        <button type="button" data-val="1" class="ans-btn w-full py-3.5 px-4 rounded-xl bg-zinc-800 hover:bg-pink-600/20 border border-zinc-700 text-left font-medium">やや当てはまる</button>
+        <button type="button" data-val="0" class="ans-btn w-full py-3.5 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-left font-medium text-zinc-300">どちらともいえない</button>
+        <button type="button" data-val="-1" class="ans-btn w-full py-3.5 px-4 rounded-xl bg-zinc-800 hover:bg-purple-600/20 border border-zinc-700 text-left font-medium">あまり当てはまらない</button>
+        <button type="button" data-val="-2" class="ans-btn w-full py-3.5 px-4 rounded-xl bg-zinc-800 hover:bg-purple-600/20 border border-zinc-700 text-left font-medium">全く当てはまらない</button>
       </div>
     </div>
 
     <!-- 結果画面 -->
-    <div id="result-screen" class="hidden glass-card rounded-3xl p-6 sm:p-8 shadow-2xl">
-      <div class="text-center mb-6">
-        <span class="text-xs font-bold tracking-widest text-zinc-400 uppercase">DIAGNOSIS RESULT</span>
-        <h2 id="result-title" class="text-2xl sm:text-3xl font-extrabold mt-1 gradient-text">
-          タイプ名
-        </h2>
-        <p id="result-subtitle" class="text-xs text-zinc-400 mt-1">サブタイトル</p>
+    <div id="result-screen" class="hidden card rounded-3xl p-6 shadow-2xl">
+      <div class="text-center mb-5">
+        <span class="text-xs font-bold text-zinc-400">DIAGNOSIS RESULT</span>
+        <h2 id="r-title" class="text-2xl font-extrabold mt-1 grad-text"></h2>
+        <p id="r-sub" class="text-xs text-zinc-400 mt-1"></p>
       </div>
-
-      <!-- 4つの割合バー -->
-      <div class="space-y-4 mb-6 bg-zinc-900/60 p-5 rounded-2xl border border-zinc-800">
+      <div class="space-y-3.5 mb-5 bg-zinc-900/70 p-4 rounded-2xl border border-zinc-800 text-sm">
         <div>
-          <div class="flex justify-between text-sm font-bold mb-1">
-            <span class="text-pink-400">ドミナント (Dom / 支配)</span>
-            <span id="score-dom">0%</span>
-          </div>
-          <div class="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden">
-            <div id="bar-dom" class="bg-pink-500 h-full rounded-full transition-all duration-700" style="width: 0%"></div>
-          </div>
+          <div class="flex justify-between font-bold mb-1"><span class="text-pink-400">ドミナント (Dom)</span><span id="s-dom">0%</span></div>
+          <div class="w-full bg-zinc-800 h-2 rounded-full"><div id="b-dom" class="bg-pink-500 h-full rounded-full" style="width:0%"></div></div>
         </div>
-
         <div>
-          <div class="flex justify-between text-sm font-bold mb-1">
-            <span class="text-purple-400">サブミッシブ (Sub / 服従)</span>
-            <span id="score-sub">0%</span>
-          </div>
-          <div class="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden">
-            <div id="bar-sub" class="bg-purple-500 h-full rounded-full transition-all duration-700" style="width: 0%"></div>
-          </div>
+          <div class="flex justify-between font-bold mb-1"><span class="text-purple-400">サブミッシブ (Sub)</span><span id="s-sub">0%</span></div>
+          <div class="w-full bg-zinc-800 h-2 rounded-full"><div id="b-sub" class="bg-purple-500 h-full rounded-full" style="width:0%"></div></div>
         </div>
-
         <div>
-          <div class="flex justify-between text-sm font-bold mb-1">
-            <span class="text-rose-400">サディスト (S / 加虐)</span>
-            <span id="score-s">0%</span>
-          </div>
-          <div class="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden">
-            <div id="bar-s" class="bg-rose-500 h-full rounded-full transition-all duration-700" style="width: 0%"></div>
-          </div>
+          <div class="flex justify-between font-bold mb-1"><span class="text-rose-400">サディスト (S)</span><span id="s-s">0%</span></div>
+          <div class="w-full bg-zinc-800 h-2 rounded-full"><div id="b-s" class="bg-rose-500 h-full rounded-full" style="width:0%"></div></div>
         </div>
-
         <div>
-          <div class="flex justify-between text-sm font-bold mb-1">
-            <span class="text-indigo-400">マゾヒスト (M / 被虐)</span>
-            <span id="score-m">0%</span>
-          </div>
-          <div class="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden
+          <div class="flex justify-between font-bold mb-1"><span class="text-indigo-400">マゾヒスト (M)</span><span id="s-m">0%</span></div>
+          <div class="w-full bg-zinc-800 h-2 rounded-full"><div id="b-m" class="bg-indigo-500 h-full rounded-full" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="space-y-3 mb-5 text-sm">
+        <div class="bg-zinc-900/40 p-3.5 rounded-xl border border-zinc-800">
+          <div class="text-xs font-bold text-zinc-400 mb-1">気質の特徴</div>
+          <p id="r-desc" class="text-zinc-200 leading-relaxed"></p>
+        </div>
+        <div class="bg-pink-500/10 p-3.5 rounded-xl border border-pink-500/20">
+          <div class="text-xs font-bold text-pink-400 mb-1">相性が良いパートナー</div>
+          <p id="r-match" class="font-bold text-white"></p>
+        </div>
+      </div>
+      <button type="button" id="btn-share" class="w-full py-3.5 rounded-2xl bg-white text-black font-bold mb-2.5 active:scale-95">結果をX（Twitter）でポストする</button>
+      <button type="button" id="btn-retry" class="w-full py-3 rounded-2xl bg-zinc-800 text-zinc-300 text-sm font-medium">もう一度診断する</button>
+    </div>
+  </div>
+
+  <script>
+    const qs = [
+      { t: "デートのプランや主導権は、自分が握ってリードしたい方だ。", a: "ds", w: 1 },
+      { t: "信頼できる相手には、自分のすべてを委ねて指示されたい。", a: "ds", w: -1 },
+      { t: "相手が困ったり恥ずかしがったりする表情を見るとゾクゾクする。", a: "sm", w: 1 },
+      { t: "少し強引に扱われたり、拘束感を伴う状況に惹かれる。", a: "sm", w: -1 },
+      { t: "パートナーの生活習慣やルールを自分が管理・コントロールしたい。", a: "ds", w: 1 },
+      { t: "「いい子だね」と褒められたり認められることで安心感を得る。", a: "ds", w: -1 },
+      { t: "相手の限界を試すような攻め方や、主導権を握って翻弄するのが好き。", a: "sm", w: 1 },
+      { t: "抵抗できない状況に置かれると、かえって気持ちが昂ぶる。", a: "sm", w: -1 },
+      { t: "相手を守るためなら、自分が責任を負って決断を下すことに迷いがない。", a: "ds", w: 1 },
+      { t: "理屈で考えるよりも、相手の感情や感覚に身を任せる方が心地よい。", a: "sm", w: -1 }
+    ];
+    let idx = 0, ds = 0, sm = 0, shareTxt = "";
+
+    function showScreen(id) {
+      ['start-screen', 'quiz-screen', 'result-screen'].forEach(s => {
+        document.getElementById(s).classList.toggle('hidden', s !== id);
+      });
+    }
+
+    function start() {
+      idx = 0; ds = 0; sm = 0;
+      showScreen('quiz-screen');
+      render();
+    }
+
+    function render() {
+      document.getElementById('q-num').textContent = `QUESTION ${idx + 1} / 10`;
+      const pct = (idx + 1) * 10;
+      document.getElementById('q-pct').textContent = pct + '%';
+      document.getElementById('q-bar').style.width = pct + '%';
+      document.getElementById('q-text').textContent = qs[idx].t;
+    }
+
+    function answer(val) {
+      const q = qs[idx];
+      if (q.a === 'ds') ds += val * q.w; else sm += val * q.w;
+      idx++;
+      if (idx < qs.length) render(); else finish();
+    }
+
+    function finish() {
+      showScreen('result-screen');
+      const domP = Math.max(0, Math.min(100, Math.round(((ds + 10) / 20) * 100)));
+      const subP = 100 - domP;
+      const sP = Math.max(0, Math.min(100, Math.round(((sm + 10) / 20) * 100)));
+      const mP = 100 - sP;
+
+      document.getElementById('s-dom').textContent = domP + '%';
+      document.getElementById('s-sub').textContent = subP + '%';
+      document.getElementById('s-s').textContent = sP + '%';
+      document.getElementById('s-m').textContent = mP + '%';
+      document.getElementById('b-dom').style.width = domP + '%';
+      document.getElementById('b-sub').style.width = subP + '%';
+      document.getElementById('b-s').style.width = sP + '%';
+      document.getElementById('b-m').style.width = mP + '%';
+
+      let title, sub, desc, match;
+      if (domP >= 50 && sP >= 50) {
+        title = "絶対的支配者（Dom × S）"; sub = "Dominant / Sadist";
+        desc = "主導権を握り、相手をコントロールしながら刺激を与えることに喜びを感じるカリスマ気質。責任感も強く導く力に長けています。";
+        match = "献身的な被虐者（Sub × M）タイプ";
+      } else if (domP >= 50 && sP < 50) {
+        title = "包容力ある導き手（Dom × M）"; sub = "Dominant / Masochist";
+        desc = "精神的な主導権や管理は握りたいものの、感覚的には相手からの強い刺激を受け止めたいギャップを持つ気質。面倒見が良く深い絆を求めます。";
+        match = "小悪魔的な従者（Sub × S）タイプ";
+      } else if (domP < 50 && sP >= 50) {
+        title = "小悪魔的な従者（Sub × S）"; sub = "Submissive / Sadist";
+        desc = "普段は相手に委ねてルールに従う安心感を求めつつも、いざという場面では相手を翻弄したり責めたりする一面を持つミステリアスな気質です。";
+        match = "包容力ある導き手（Dom × M）タイプ";
+      } else {
+        title = "献身的な被虐者（Sub × M）"; sub = "Submissive / Masochist";
+        desc = "信頼した相手に心も体もすべて委ね、強い刺激や支配を受けることで深い幸福感と解放感を味わう純粋な気質。一途な愛情を持ちます。";
+        match = "絶対的支配者（Dom × S）タイプ";
+      }
+
+      document.getElementById('r-title').textContent = title;
+      document.getElementById('r-sub').textContent = sub;
+      document.getElementById('r-desc').textContent = desc;
+      document.getElementById('r-match').textContent = match;
+      shareTxt = `【ドミ・サブ・S・M気質診断】\n結果は「${title}」でした！\nDom:${domP}% / Sub:${subP}% / S:${sP}% / M:${mP}%\n相性◎：${match}\n#気質診断 #心理テスト`;
+    }
+
+    document.getElementById('btn-start').addEventListener('click', start);
+    document.getElementById('btn-retry').addEventListener('click', start);
+    document.getElementById('btn-share').addEventListener('click', () => {
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTxt)}&url=${encodeURIComponent(location.href)}`, '_blank');
+    });
+    document.querySelectorAll('.ans-btn').forEach(b => {
+      b.addEventListener('click', () => answer(Number(b.dataset.val)));
+    });
+  </script>
+</body>
+</html>
